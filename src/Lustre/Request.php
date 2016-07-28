@@ -1,6 +1,6 @@
 <?php
 
-namespace Luster;
+namespace Lustre;
 
 /**
  * The HTTP request with basic request properties

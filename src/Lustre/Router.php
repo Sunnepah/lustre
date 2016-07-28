@@ -5,7 +5,7 @@
  * Date: 6/22/16
  * Time: 2:42 PM
  */
-namespace Luster;
+namespace Lustre;
 
 use Application\Controllers;
 use RuntimeException;

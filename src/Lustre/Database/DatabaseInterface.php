@@ -6,7 +6,7 @@
  * Time: 1:50 AM
  */
 
-namespace Luster\Database;
+namespace Lustre\Database;
 
 interface DatabaseInterface
 {

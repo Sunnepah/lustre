@@ -6,7 +6,7 @@
  * Time: 5:11 PM
  */
 
-use Luster\Request;
+use Lustre\Request;
 
 class RequestTest extends \TestCase
 {

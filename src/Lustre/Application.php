@@ -6,7 +6,7 @@
  * Date: 6/12/16
  * Time: 1:45 AM
  */
-namespace Luster;
+namespace Lustre;
 
 use Exception;
 

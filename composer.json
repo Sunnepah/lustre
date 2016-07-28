@@ -1,5 +1,5 @@
 {
-  "name": "sunnepah/luster",
+  "name": "sunnepah/lustre",
   "version": "1.0.0",
   "type": "framework",
   "keywords": ["framework", "php"],
@@ -22,7 +22,7 @@
     "guzzlehttp/guzzle": "~6.1"
   },
   "autoload": {
-    "psr-4": {"Luster\\": "src/Luster"}
+    "psr-4": {"Lustre\\": "src/Lustre"}
   },
   "autoload-dev": {
         "classmap": [

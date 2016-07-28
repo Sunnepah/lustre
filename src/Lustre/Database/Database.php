@@ -6,7 +6,7 @@
  * Time: 3:11 AM
  */
 
-namespace Luster\Database;
+namespace Lustre\Database;
 
 class Database extends MysqliDBO
 {

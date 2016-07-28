@@ -7,7 +7,7 @@
  * Time: 2:19 AM
  */
 
-use Luster\Application;
+use Lustre\Application;
 
 /**
  * Class ApplicationTest.

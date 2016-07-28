@@ -1,6 +1,6 @@
 <?php
 
-namespace Luster\Database;
+namespace Lustre\Database;
 
 use Application\Config\DBConfig;
 
