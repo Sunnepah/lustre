@@ -26,15 +26,4 @@ class ApplicationTest extends TestCase
     public function testApplicationInstanceCreated() {
         $this->assertInstanceOf(Application::class, Application::singleton());
     }
-
-    public function test_Root_Endpoint_Returns_200() {
-        $response = $this->client->get('/');
-
-        $this->assertEquals(200, $response->getStatusCode());
-
-        $data = json_decode($response->getBody(), true);
-
-        $this->assertArrayHasKey('Palun', $data);
-        $this->assertEquals("v1.0", $data['Palun']);
-    }
 }
