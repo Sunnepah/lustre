@@ -39,7 +39,7 @@ abstract class PDOMysql implements DatabaseInterface {
         $query = $this->pdo->prepare("SELECT * FROM " . $table);
         $query->execute();
 
-        return $query->fetchAll();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
