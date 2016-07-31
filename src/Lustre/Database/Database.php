@@ -8,7 +8,7 @@
 
 namespace Lustre\Database;
 
-class Database extends MysqliDBO
+class Database extends PDOMysql
 {
     /*
      * This class extends from the chosen implementation of 
