@@ -7,7 +7,6 @@
  */
 namespace Lustre;
 
-use Application\Controllers;
 use RuntimeException;
 
 trait Router
@@ -67,6 +66,7 @@ trait Router
     }
 
     /**
+     * @param Request $request
      * @return array
      */
     protected function getRequestInfo(Request $request) {
@@ -81,38 +81,5 @@ trait Router
     protected function routeNotFound($method, $pathInfo)
     {
         throw new RuntimeException("Route not found - " . $method . " on uri " . $pathInfo . " not found");
-    }
-
-    /**
-     * Resolves route action to Callable Controller class and method
-     * @param $ControllerAction
-     * @return mixed
-     */
-    public function handleRequest($ControllerAction) {
-        
-        list($controller, $action) = explode(":", $ControllerAction);
-        
-        $response = $this->callControllerAction($controller, $action);
-        
-        return $response;
-    }
-
-    /**
-     * It instantiate Controller class and invoke method call 
-     * @param $controller
-     * @param $action
-     * @return mixed
-     */
-    protected function callControllerAction($controller, $action)
-    {
-        $namespace = "\\Application\\Controllers\\";
-        
-        if (!method_exists($instance = $namespace.$controller, $action)) {
-            throw new RuntimeException("Method " . $action . " does not exist!");
-        }
-        
-        $controller = new $instance();
-        
-        return $controller->$action();
     }
 }

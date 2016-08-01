@@ -20,6 +20,7 @@ use Exception;
 class Application
 {
     use Router;
+    use Route;
     
     private static $applicationInstance;
 
