@@ -36,7 +36,8 @@ abstract class PDOMysql implements DatabaseInterface {
      * @return array
      */
     public function getAll($table, array $where = NULL) {
-        $query = $this->pdo->prepare("SELECT * FROM " . $table);
+        $query = $this->pdo->prepare("SELECT * FROM :tableName ");
+        $query->bindParam(':tableName', $table);
         $query->execute();
 
         return $query->fetchAll(PDO::FETCH_ASSOC);
@@ -58,8 +59,10 @@ abstract class PDOMysql implements DatabaseInterface {
      * @return mixed
      */
     public function find($table, $id) {
-        $stmt = $this->pdo->prepare("SELECT * FROM " . $table . " WHERE id=:id");
-        $stmt->execute(array(':id' => $id));
+        $stmt = $this->pdo->prepare("SELECT * FROM  :tableName WHERE id=:id");
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':tableName', $table);
+        $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -82,8 +85,10 @@ abstract class PDOMysql implements DatabaseInterface {
      */
     public function delete($table, $id) {
 
-        $stmt = $this->pdo->prepare("DELETE FROM " . $table . " WHERE id=:id");
-        $stmt->execute(array(':id' => $id));
+        $stmt = $this->pdo->prepare("DELETE FROM :tableName WHERE id=:id");
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':tableName', $table);
+        $stmt->execute();
 
         return $stmt->rowCount();
     }
