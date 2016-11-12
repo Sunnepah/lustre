@@ -15,7 +15,7 @@ use Exception;
  *
  * This class is the core of the Application registry
  *
- * @package Palun
+ * @package Lustre
  */
 class Application
 {
@@ -52,6 +52,10 @@ class Application
     public function route() {
         return $this->route;
     }
+
+    public function router() {
+        return $this->router;
+    }
     
     /**
      * It gets route information - Http Verb and Request path
@@ -82,8 +86,7 @@ class Application
     /**
      * Run the Application by calling the dispatcher
      */
-    public static function run() {
-        
-        echo self::dispatch();
+    public function run() {
+        echo $this->dispatch();
     }
 }

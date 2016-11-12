@@ -20,7 +20,7 @@ class Router
      * @param $controllerAction
      */
     public function get($path, $controllerAction) {
-        $this->registerRoute ('GET', $path, $controllerAction);
+        $this->registerRoute('GET', $path, $controllerAction);
     }
 
     /**
@@ -30,7 +30,7 @@ class Router
      * @param $controllerAction
      */
     public function post($path, $controllerAction) {
-        $this->registerRoute ('POST', $path, $controllerAction);
+        $this->registerRoute('POST', $path, $controllerAction);
     }
 
     /**
@@ -40,7 +40,7 @@ class Router
      * @param $controllerAction
      */
     public function put($path, $controllerAction) {
-        $this->registerRoute ('PUT', $path, $controllerAction);
+        $this->registerRoute('PUT', $path, $controllerAction);
     }
 
     /**
@@ -50,7 +50,7 @@ class Router
      * @param $controllerAction
      */
     public function delete($path, $controllerAction) {
-        $this->registerRoute ('DELETE', $path, $controllerAction);
+        $this->registerRoute('DELETE', $path, $controllerAction);
     }
 
     /**
@@ -60,7 +60,7 @@ class Router
      * @param $path
      * @param $action
      */
-    public function registerRoute ($httpVerb, $path, $action) {
+    public function registerRoute($httpVerb, $path, $action) {
 
         $this->routes[$httpVerb . $path] = ['uri' => $path, 'method' => $httpVerb, 'action' => $action];
     }
