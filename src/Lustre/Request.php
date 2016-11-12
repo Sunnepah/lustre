@@ -49,12 +49,13 @@ class Request
      * @param array $params Request information
      */
     public function __construct($params = array()) {
-
+        $requestUri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : "/";
+        
         if (count($params) == 0) {
             $params = [
                 'query'    => $_GET,
                 'data'     => $_POST,
-                'url'      => $_SERVER['REQUEST_URI'],
+                'url'      => $requestUri,
                 'base'     => $_SERVER['SCRIPT_NAME'],
                 'method'   => self::getHttpMethod()
             ];
@@ -115,7 +116,7 @@ class Request
      * @return string
      */
     public static function getHttpMethod() {
-        $method = ($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+        $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
 
         if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
             $method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
@@ -134,7 +135,11 @@ class Request
      */
     public function getPathInfo()
     {
-        return $this->path = parse_url($_SERVER['REQUEST_URI'])['path'];
+        if (isset($_SERVER['REQUEST_URI'])) {
+            return $this->path = parse_url($_SERVER['REQUEST_URI'])['path'];
+        }
+        
+        return "/";
     }
 
     /**

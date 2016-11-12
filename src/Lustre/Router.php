@@ -9,9 +9,9 @@ namespace Lustre;
 
 use RuntimeException;
 
-trait Router
+class Router
 {
-    protected $routes = [];
+    public $routes = [];
     
     /**
      * Register GET route
@@ -69,7 +69,7 @@ trait Router
      * @param Request $request
      * @return array
      */
-    protected function getRequestInfo(Request $request) {
+    public function getRequestInfo(Request $request) {
         return [$request->getHttpMethod(), $request->path];
     }
 
@@ -78,7 +78,7 @@ trait Router
      * @param $pathInfo
      * @throws RuntimeException
      */
-    protected function routeNotFound($method, $pathInfo)
+    public function routeNotFound($method, $pathInfo)
     {
         throw new RuntimeException("Route not found - " . $method . " on uri " . $pathInfo . " not found");
     }

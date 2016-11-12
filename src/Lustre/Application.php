@@ -19,15 +19,22 @@ use Exception;
  */
 class Application
 {
-    use Router;
-    use Route;
     
     private static $applicationInstance;
+    private $route;
+    private $request;
+    private $router;
+    private $dispatcher;
 
     /**
      * Application constructor.
      */
-    public function __construct () { }
+    private function __construct () {
+        $this->route = new Route();
+        $this->request = new Request();
+        $this->router = new Router();
+        $this->dispatcher = new Dispatcher();
+    }
 
     /**
      * Ensure single instance of the application is created
@@ -42,32 +49,41 @@ class Application
         return self::$applicationInstance;
     }
     
+    public function route() {
+        return $this->route;
+    }
+    
     /**
      * It gets route information - Http Verb and Request path
-     * If route found, it process request
+     * If route found, it dispatches the request
      */
     public function dispatch() {
-
-        $request = new Request();
-        list($method, $pathInfo) = $this->getRequestInfo($request);
+        
+        list($method, $pathInfo) = $this->router->getRequestInfo($this->request);
         
         try {
-            if (isset($this->routes[$method . $pathInfo])) {
-                return $this->handleRequest($this->routes[$method . $pathInfo]['action']);
+            if (isset($this->router->routes[$method . $pathInfo])) {
+                return $this->dispatcher->dispatch($this->router->routes[$method . $pathInfo]['action']);
             }
 
-            $this->routeNotFound($method, $pathInfo);
+            $this->router->routeNotFound($method, $pathInfo);
 
         } catch (Exception $e) {
-            return 'Caught exception: '.  $e->getMessage(). "\n";
+            throw new Exception('Caught exception: '.  $e->getMessage(). "\n");
         }
     }
+
+
+    /**
+     * Prevent instantiating class
+     */
+    private function __clone() {}
 
     /**
      * Run the Application by calling the dispatcher
      */
-    public function run() {
+    public static function run() {
         
-        echo $this->dispatch();
+        echo self::dispatch();
     }
 }

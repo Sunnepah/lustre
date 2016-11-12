@@ -14,15 +14,6 @@ use Lustre\Application;
  */ 
 class ApplicationTest extends TestCase
 {
-    protected $client;
-
-    protected function setUp()
-    {
-        $this->client = new GuzzleHttp\Client([
-            'base_uri' => 'http://0.0.0.0:8080'
-        ]);
-    }
-
     public function testApplicationInstanceCreated() {
         $this->assertInstanceOf(Application::class, Application::singleton());
     }
