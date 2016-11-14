@@ -8,7 +8,7 @@
 
 namespace Lustre\Database;
 
-class Database extends PDOMysql
+abstract class Database extends PDOMysql
 {
     /*
      * This class extends from the chosen implementation of 

@@ -26,8 +26,14 @@ abstract class PDOMysql implements DatabaseInterface {
         $option['password'] = DBConfig::$driver['mysql']['password'];
         $option['database'] = DBConfig::$driver['mysql']['database'];
 
+        $opt = [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES   => false,
+        ];
+
         $this->pdo = new PDO('mysql:host=' . $option['host'] . ';dbname=' . $option['database'] . ';charset=utf8mb4',
-            $option['user'], $option['password']);
+            $option['user'], $option['password'], $opt);
     }
 
     /**
