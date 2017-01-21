@@ -101,61 +101,78 @@ abstract class PDOMysql implements DatabaseInterface {
 
     /**
      * @param $table
-     * @param $object
+     * @param $data
      * @param null $keyName
      * @return bool
      */
-    private function insertData($table, &$object, $keyName = NULL) {
-        $fmtsql = 'INSERT INTO '.$table.' ( %s ) VALUES ( %s ) ';
-        $fields = array();
-        $values = array();
-        foreach (get_object_vars( $object ) as $k => $v) {
-            if (is_array($v) or is_object($v) or $v === NULL) {
+    private function insertData($table, &$data, $keyName = NULL) {
+        $query = 'INSERT INTO ' . $table . ' ( %s ) VALUES ( %s ) ';
+
+        $columns = array();
+        $placeHolders = array();
+
+        $stmt = null;
+        $keyValues = array();
+
+        foreach (get_object_vars($data) as $k => $v) {
+            if (is_array($v) || is_object($v) || $v === NULL) {
                 continue;
             }
-            if ($k[0] == '_') { // internal field
-                continue;
-            }
-            $fields[] = $table . "." . $k;
-            $values[] = "'".$v."'";
+
+            $columns[] = $table . "." . $k;
+            $placeHolders[] = ":" . $k;
+
+            $keyValues[$k] = $v;
         }
 
         try {
-            $query = sprintf ($fmtsql, implode (",", $fields), implode (",", $values));
-            $this->pdo->query($query);
+            $query = sprintf($query, implode (",", $columns), implode (",", $placeHolders));
+            $stmt = $this->pdo->prepare($query);
+
+            $this->bindValueToPrepareStatement($stmt, $keyValues);
+            $stmt->execute();
+
         } catch (PDOException $e) {
             throw $e;
         }
 
         $id = $this->pdo->lastInsertId();
         if ($keyName && $id) {
-            $object->$keyName = $id;
+            $data->$keyName = $id;
         }
 
-        return $object;
+        return $data;
+    }
+
+    private function bindValueToPrepareStatement(&$prepareStatement, $keyValues) {
+        foreach ($keyValues as $k => $v) {
+            $prepareStatement->bindParam(":" . $k, $v);
+        }
     }
 
     /**
      * @param $table
-     * @param $object
+     * @param $data
      * @param $keyName
      * @param bool $updateNulls
      * @return mixed
      */
-    private function updateData($table, &$object, $keyName, $updateNulls=true) {
-        $fmtsql = 'UPDATE ' . $table . ' SET %s WHERE %s';
+    private function updateData($table, &$data, $keyName, $updateNulls=true) {
+        $query = 'UPDATE ' . $table . ' SET %s WHERE %s';
         $where = "";
         $tmp = array();
-        foreach (get_object_vars( $object ) as $k => $v) {
-            if( is_array($v) or is_object($v) or $k[0] == '_' ) { // internal or NA field
+
+        foreach (get_object_vars($data) as $k => $v) {
+            if (is_array($v) || is_object($v) || $k[0] == '_' ) {
                 continue;
             }
-            if( $k == $keyName ) { // PK not to be updated
-                $where = $keyName . '=' . "'".$v."'";
+
+            if ($k == $keyName) { // PK not to be updated
+                $where = $keyName . '=' . "'" . $v . "'";
                 continue;
             }
-            if ($v === null)
-            {
+
+            if ($v === null) {
                 if ($updateNulls) {
                     $val = 'NULL';
                 } else {
@@ -164,14 +181,15 @@ abstract class PDOMysql implements DatabaseInterface {
             } else {
                 $val = $v;
             }
+
             $tmp[] = $k . '=' . "'" . $val . "'";
         }
 
         try {
-            $query = sprintf($fmtsql, implode( ",", $tmp ) , $where);
+            $query = sprintf($query, implode( ",", $tmp ) , $where);
             $this->pdo->query($query);
 
-            return $object;
+            return $data;
         } catch (PDOException $e) {
             throw $e;
         }
