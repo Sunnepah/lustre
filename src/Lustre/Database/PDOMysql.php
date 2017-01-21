@@ -42,8 +42,7 @@ abstract class PDOMysql implements DatabaseInterface {
      * @return array
      */
     public function getAll($table, array $where = NULL) {
-        $query = $this->pdo->prepare("SELECT * FROM :tableName ");
-        $query->bindParam(':tableName', $table);
+        $query = $this->pdo->prepare("SELECT * FROM {$table}");
         $query->execute();
 
         return $query->fetchAll(PDO::FETCH_ASSOC);
@@ -65,12 +64,11 @@ abstract class PDOMysql implements DatabaseInterface {
      * @return mixed
      */
     public function find($table, $id) {
-        $stmt = $this->pdo->prepare("SELECT * FROM  :tableName WHERE id=:id");
+        $stmt = $this->pdo->prepare("SELECT * FROM {$table} WHERE id=:id");
         $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':tableName', $table);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
     }
 
     /**
@@ -91,9 +89,8 @@ abstract class PDOMysql implements DatabaseInterface {
      */
     public function delete($table, $id) {
 
-        $stmt = $this->pdo->prepare("DELETE FROM :tableName WHERE id=:id");
+        $stmt = $this->pdo->prepare("DELETE FROM {$table} WHERE id=:id");
         $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':tableName', $table);
         $stmt->execute();
 
         return $stmt->rowCount();
@@ -106,13 +103,13 @@ abstract class PDOMysql implements DatabaseInterface {
      * @return bool
      */
     private function insertData($table, &$data, $keyName = NULL) {
-        $query = 'INSERT INTO ' . $table . ' ( %s ) VALUES ( %s ) ';
+        $query = 'INSERT INTO ' . $table . ' (%s) VALUES (%s)';
 
         $columns = array();
         $placeHolders = array();
 
         $stmt = null;
-        $keyValues = array();
+        $values = array();
 
         foreach (get_object_vars($data) as $k => $v) {
             if (is_array($v) || is_object($v) || $v === NULL) {
@@ -120,17 +117,15 @@ abstract class PDOMysql implements DatabaseInterface {
             }
 
             $columns[] = $table . "." . $k;
-            $placeHolders[] = ":" . $k;
+            $placeHolders[] = "?";
 
-            $keyValues[$k] = $v;
+            $values[] = $v;
         }
 
         try {
             $query = sprintf($query, implode (",", $columns), implode (",", $placeHolders));
             $stmt = $this->pdo->prepare($query);
-
-            $this->bindValueToPrepareStatement($stmt, $keyValues);
-            $stmt->execute();
+            $stmt->execute($values);
 
         } catch (PDOException $e) {
             throw $e;
@@ -142,12 +137,6 @@ abstract class PDOMysql implements DatabaseInterface {
         }
 
         return $data;
-    }
-
-    private function bindValueToPrepareStatement(&$prepareStatement, $keyValues) {
-        foreach ($keyValues as $k => $v) {
-            $prepareStatement->bindParam(":" . $k, $v);
-        }
     }
 
     /**
@@ -167,7 +156,7 @@ abstract class PDOMysql implements DatabaseInterface {
                 continue;
             }
 
-            if ($k == $keyName) { // PK not to be updated
+            if ($k == $keyName) {
                 $where = $keyName . '=' . "'" . $v . "'";
                 continue;
             }
