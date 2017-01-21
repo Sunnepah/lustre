@@ -14,13 +14,12 @@ class Dispatcher
 {
     /**
      * Resolves route action to Callable Controller class and method
-     * @param $ControllerAction
+     * @param $controllerAction
      * @return mixed
      */
-    public function dispatch($ControllerAction)
+    public function dispatch($controllerAction)
     {
-
-        list($controller, $action) = explode(":", $ControllerAction);
+        list($controller, $action) = explode(":", $controllerAction);
 
         $response = $this->callControllerAction($controller, $action);
 
