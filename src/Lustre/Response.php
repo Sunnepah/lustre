@@ -114,8 +114,8 @@ class Response
         $this->status = $this->validateStatus($status);
         http_response_code($this->getStatusCode());
 
-        $this->headers = $headers ? $headers : "";
-        $this->body = $content ? $content : "";
+        $this->headers = $headers ? $headers : [];
+        $this->body = $content ? $content : [];
     }
 
     /**
