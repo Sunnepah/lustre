@@ -68,7 +68,9 @@ abstract class PDOMysql implements DatabaseInterface {
         $stmt->bindParam(':id', $id);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC)[0];
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $res = count($result) > 0 ? $result[0] : [];
     }
 
     /**
@@ -85,7 +87,6 @@ abstract class PDOMysql implements DatabaseInterface {
      * @param $table
      * @param $id
      * @return mixed
-     * @internal param $keyName
      */
     public function delete($table, $id) {
 
@@ -150,6 +151,7 @@ abstract class PDOMysql implements DatabaseInterface {
         $query = 'UPDATE ' . $table . ' SET %s WHERE %s';
         $where = "";
         $tmp = array();
+        $values = array();
 
         foreach (get_object_vars($data) as $k => $v) {
             if (is_array($v) || is_object($v) || $k[0] == '_' ) {
@@ -171,12 +173,14 @@ abstract class PDOMysql implements DatabaseInterface {
                 $val = $v;
             }
 
-            $tmp[] = $k . '=' . "'" . $val . "'";
+            $tmp[] = $k . '=' . "?";
+            $values[] = $val;
         }
 
         try {
             $query = sprintf($query, implode( ",", $tmp ) , $where);
-            $this->pdo->query($query);
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute($values);
 
             return $data;
         } catch (PDOException $e) {
